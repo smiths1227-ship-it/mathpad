@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>exponents — mathpad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #f5f0e8; font-family: 'Patrick Hand', cursive; min-height: 100vh; background-image: linear-gradient(#e8e0d0 1px, transparent 1px); background-size: 100% 32px; background-position: 0 24px; }
+    body::before { content: ''; position: fixed; left: 72px; top: 0; bottom: 0; width: 2px; background: rgba(255,100,100,0.3); z-index: 0; }
+    nav { position: sticky; top: 0; z-index: 10; display: flex; gap: 2rem; padding: 1rem 2rem 1rem 90px; font-size: 1rem; border-bottom: 2px solid rgba(255,100,100,0.2); background: rgba(245,240,232,0.95); flex-wrap: wrap; }
+    nav a { color: #888; text-decoration: none; transition: color 0.2s; }
+    nav a:hover, nav a.active { color: #e8473f; }
+    .page-title { font-family: 'Caveat', cursive; font-size: 0.75rem; color: #bbb; margin-left: auto; align-self: center; }
+    .container { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 3rem 2rem 3rem 90px; }
+    h1 { font-family: 'Caveat', cursive; font-size: 3rem; color: #2a2a2a; margin-bottom: 0.25rem; }
+    .sub { color: #aaa; font-size: 0.9rem; margin-bottom: 2rem; }
+    .mode-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .tab { background: rgba(255,255,255,0.7); border: 1.5px solid #ddd; border-radius: 4px; padding: 0.5rem 1rem; cursor: pointer; font-size: 0.9rem; color: #888; transition: all 0.2s; box-shadow: 1px 1px 0 #e0d8c8; }
+    .tab:hover, .tab.active { border-color: #e8473f; color: #e8473f; }
+    .input-area { background: rgba(255,255,255,0.7); border: 1.5px solid #ddd; border-radius: 4px; padding: 1.5rem; box-shadow: 2px 2px 0 #e0d8c8; margin-bottom: 1.5rem; }
+    .field-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    label { color: #888; font-size: 0.9rem; width: 100px; }
+    input[type=number] { background: #fffef9; border: 1.5px solid #ddd; border-radius: 4px; font-family: 'Caveat', cursive; font-size: 1.3rem; padding: 0.35rem 0.75rem; width: 120px; color: #2a2a2a; outline: none; transition: border-color 0.2s; }
+    input[type=number]:focus { border-color: #e8473f; }
+    .solve-btn { background: #e8473f; border: none; color: #fff; font-family: 'Caveat', cursive; font-size: 1.2rem; padding: 0.6rem 2rem; border-radius: 4px; cursor: pointer; box-shadow: 2px 2px 0 #c73830; transition: background 0.2s; }
+    .solve-btn:hover { background: #c73830; }
+    .steps-area { background: rgba(255,255,255,0.7); border: 1.5px solid #ddd; border-radius: 4px; padding: 1.5rem; box-shadow: 2px 2px 0 #e0d8c8; display: none; }
+    .steps-area.show { display: block; }
+    .steps-title { font-family: 'Caveat', cursive; font-size: 1.1rem; color: rgba(255,100,100,0.6); margin-bottom: 1rem; text-transform: uppercase; }
+    .step { display: flex; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed #e8e0d0; }
+    .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .step-num { background: rgba(255,100,100,0.15); color: #e8473f; font-family: 'Caveat', cursive; font-size: 0.85rem; padding: 0.15rem 0.5rem; border-radius: 3px; white-space: nowrap; min-width: 60px; text-align: center; margin-top: 2px; }
+    .step-content { flex: 1; }
+    .step-label { color: #888; font-size: 0.85rem; margin-bottom: 0.25rem; }
+    .step-math { font-family: 'Caveat', cursive; font-size: 1.3rem; color: #2a2a2a; white-space: pre-line; }
+    .highlight { color: #e8473f; }
+    .final-answer { background: rgba(255,100,100,0.08); border: 2px solid rgba(255,100,100,0.3); border-radius: 4px; padding: 1rem 1.5rem; margin-top: 1.5rem; }
+    .final-label { color: #888; font-size: 0.85rem; }
+    .final-value { font-family: 'Caveat', cursive; font-size: 2rem; color: #e8473f; }
+    .footer { margin-top: 3rem; font-size: 0.8rem; color: #bbb; font-family: 'Caveat', cursive; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../index.html">home</a>
+    <a href="arithmetic.html">arithmetic</a>
+    <a href="algebra.html">algebra</a>
+    <a href="fractions.html">fractions</a>
+    <a href="geometry.html">geometry</a>
+    <a href="pemdas.html">pemdas</a>
+    <a href="../about.html">about</a>
+    <span class="page-title">mathpad ✏️</span>
+  </nav>
+  <div class="container">
+    <h1>exponents & roots</h1>
+    <p class="sub">// powers, square roots, nth roots — fully expanded</p>
+    <div class="mode-tabs">
+      <div class="tab active" onclick="setMode('power',this)">power (bⁿ)</div>
+      <div class="tab" onclick="setMode('sqrt',this)">square root (√x)</div>
+      <div class="tab" onclick="setMode('nroot',this)">nth root (ⁿ√x)</div>
+    </div>
+    <div class="input-area">
+      <div id="fields"></div>
+      <button class="solve-btn" onclick="solveExp()">show steps →</button>
+    </div>
+    <div class="steps-area" id="steps"></div>
+    <div class="footer">mathpad — built by zecarrot · v1.0</div>
+  </div>
+  <script>
+    let mode = 'power';
+    function setMode(m, el) {
+      mode = m;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderFields();
+      document.getElementById('steps').classList.remove('show');
+    }
+    function renderFields() {
+      const f = {
+        power: `<div class="field-row"><label>base (b)</label><input type="number" id="base" value="3" step="any"/></div><div class="field-row"><label>exponent (n)</label><input type="number" id="exp" value="4" step="any"/></div>`,
+        sqrt: `<div class="field-row"><label>number (x)</label><input type="number" id="num" value="144" step="any"/></div>`,
+        nroot: `<div class="field-row"><label>number (x)</label><input type="number" id="num" value="125" step="any"/></div><div class="field-row"><label>root (n)</label><input type="number" id="n" value="3" step="any"/></div>`,
+      };
+      document.getElementById('fields').innerHTML = f[mode];
+    }
+    function solveExp() {
+      let steps = [], answer, title;
+      if (mode === 'power') {
+        const b = parseFloat(document.getElementById('base').value);
+        const n = parseFloat(document.getElementById('exp').value);
+        answer = Math.pow(b, n);
+        title = `${b}^${n}`;
+        const expansion = n > 1 && n <= 10 && Number.isInteger(n) ? Array(n).fill(b).join(' × ') : null;
+        steps = [
+          { num: 'step 1', label: 'write out the power', math: `${b}^${n} means multiply ${b} by itself ${n} times` },
+          expansion ? { num: 'step 2', label: 'expand', math: expansion } : null,
+          { num: expansion ? 'step 3' : 'step 2', label: 'calculate', math: `${b}^${n} = <span class="highlight">${parseFloat(answer.toFixed(8))}</span>` },
+        ].filter(Boolean);
+      } else if (mode === 'sqrt') {
+        const x = parseFloat(document.getElementById('num').value);
+        answer = Math.sqrt(x);
+        title = `√${x}`;
+        const perfect = Number.isInteger(answer);
+        steps = [
+          { num: 'step 1', label: 'write the problem', math: `√${x}` },
+          { num: 'step 2', label: 'ask: what number times itself = ' + x + '?', math: `${parseFloat(answer.toFixed(6))} × ${parseFloat(answer.toFixed(6))} = ${x}` },
+          { num: 'step 3', label: perfect ? 'perfect square!' : 'not a perfect square — decimal answer', math: `√${x} = <span class="highlight">${parseFloat(answer.toFixed(8))}</span>` },
+        ];
+      } else {
+        const x = parseFloat(document.getElementById('num').value);
+        const n = parseFloat(document.getElementById('n').value);
+        answer = Math.pow(x, 1/n);
+        title = `${n}√${x}`;
+        steps = [
+          { num: 'step 1', label: 'write the problem', math: `${n}th root of ${x}` },
+          { num: 'step 2', label: 'rewrite as an exponent', math: `${x}^(1/${n})` },
+          { num: 'step 3', label: 'ask: what number to the power of ${n} = ' + x + '?', math: `${parseFloat(answer.toFixed(6))}^${n} ≈ ${parseFloat(Math.pow(answer, n).toFixed(6))}` },
+          { num: 'step 4', label: 'answer', math: `${n}√${x} = <span class="highlight">${parseFloat(answer.toFixed(8))}</span>` },
+        ];
+      }
+      const html = `
+        <div class="steps-title">working — ${title}</div>
+        ${steps.map(s => `<div class="step"><div class="step-num">${s.num}</div><div class="step-content"><div class="step-label">${s.label}</div><div class="step-math">${s.math}</div></div></div>`).join('')}
+        <div class="final-answer"><div class="final-label">answer</div><div class="final-value">${title} = ${parseFloat(answer.toFixed(8))}</div></div>
+      `;
+      const el = document.getElementById('steps');
+      el.innerHTML = html;
+      el.classList.add('show');
+    }
+    renderFields();
+  </script>
+</body>
+</html>
