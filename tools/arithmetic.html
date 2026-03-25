@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>arithmetic — mathpad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #f5f0e8; font-family: 'Patrick Hand', cursive; min-height: 100vh; background-image: linear-gradient(#e8e0d0 1px, transparent 1px); background-size: 100% 32px; background-position: 0 24px; }
+    body::before { content: ''; position: fixed; left: 72px; top: 0; bottom: 0; width: 2px; background: rgba(255,100,100,0.3); z-index: 0; }
+    nav { position: sticky; top: 0; z-index: 10; display: flex; gap: 2rem; padding: 1rem 2rem 1rem 90px; font-size: 1rem; border-bottom: 2px solid rgba(255,100,100,0.2); background: rgba(245,240,232,0.95); flex-wrap: wrap; }
+    nav a { color: #888; text-decoration: none; transition: color 0.2s; }
+    nav a:hover, nav a.active { color: #e8473f; }
+    .page-title { font-family: 'Caveat', cursive; font-size: 0.75rem; color: #bbb; margin-left: auto; align-self: center; }
+    .container { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 3rem 2rem 3rem 90px; }
+    h1 { font-family: 'Caveat', cursive; font-size: 3rem; color: #2a2a2a; margin-bottom: 0.25rem; }
+    .sub { color: #aaa; font-size: 0.9rem; margin-bottom: 2rem; }
+    .input-area { background: rgba(255,255,255,0.7); border: 1.5px solid #ddd; border-radius: 4px; padding: 1.5rem; box-shadow: 2px 2px 0 #e0d8c8; margin-bottom: 1.5rem; }
+    .row { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+    label { font-size: 0.9rem; color: #888; min-width: 40px; }
+    input[type=number] { background: #fffef9; border: 1.5px solid #ddd; border-radius: 4px; font-family: 'Caveat', cursive; font-size: 1.4rem; padding: 0.4rem 0.75rem; width: 120px; color: #2a2a2a; outline: none; transition: border-color 0.2s; }
+    input[type=number]:focus { border-color: #e8473f; }
+    select { background: #fffef9; border: 1.5px solid #ddd; border-radius: 4px; font-family: 'Patrick Hand', cursive; font-size: 1rem; padding: 0.4rem 0.75rem; color: #2a2a2a; outline: none; cursor: pointer; }
+    .solve-btn { background: #e8473f; border: none; color: #fff; font-family: 'Caveat', cursive; font-size: 1.2rem; padding: 0.6rem 2rem; border-radius: 4px; cursor: pointer; transition: background 0.2s; box-shadow: 2px 2px 0 #c73830; }
+    .solve-btn:hover { background: #c73830; }
+    .steps-area { background: rgba(255,255,255,0.7); border: 1.5px solid #ddd; border-radius: 4px; padding: 1.5rem; box-shadow: 2px 2px 0 #e0d8c8; display: none; }
+    .steps-area.show { display: block; }
+    .steps-title { font-family: 'Caveat', cursive; font-size: 1.1rem; color: rgba(255,100,100,0.6); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .step { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed #e8e0d0; }
+    .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .step-num { background: rgba(255,100,100,0.15); color: #e8473f; font-family: 'Caveat', cursive; font-size: 0.85rem; padding: 0.15rem 0.5rem; border-radius: 3px; white-space: nowrap; min-width: 60px; text-align: center; margin-top: 2px; }
+    .step-content { flex: 1; }
+    .step-label { color: #888; font-size: 0.85rem; margin-bottom: 0.25rem; }
+    .step-math { font-family: 'Caveat', cursive; font-size: 1.4rem; color: #2a2a2a; }
+    .step-math .highlight { color: #e8473f; }
+    .final-answer { background: rgba(255,100,100,0.08); border: 2px solid rgba(255,100,100,0.3); border-radius: 4px; padding: 1rem 1.5rem; margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    .final-label { color: #888; font-size: 0.85rem; }
+    .final-value { font-family: 'Caveat', cursive; font-size: 2rem; color: #e8473f; }
+    .footer { margin-top: 3rem; font-size: 0.8rem; color: #bbb; font-family: 'Caveat', cursive; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../index.html">home</a>
+    <a href="arithmetic.html" class="active">arithmetic</a>
+    <a href="algebra.html">algebra</a>
+    <a href="fractions.html">fractions</a>
+    <a href="geometry.html">geometry</a>
+    <a href="pemdas.html">pemdas</a>
+    <a href="../about.html">about</a>
+    <span class="page-title">mathpad ✏️</span>
+  </nav>
+  <div class="container">
+    <h1>arithmetic</h1>
+    <p class="sub">// add, subtract, multiply, divide — with every step shown</p>
+
+    <div class="input-area">
+      <div class="row">
+        <label>first</label>
+        <input type="number" id="a" value="248" step="any"/>
+      </div>
+      <div class="row">
+        <label>op</label>
+        <select id="op">
+          <option value="+">+ addition</option>
+          <option value="-">− subtraction</option>
+          <option value="*">× multiplication</option>
+          <option value="/">÷ division</option>
+        </select>
+      </div>
+      <div class="row">
+        <label>second</label>
+        <input type="number" id="b" value="137" step="any"/>
+      </div>
+      <button class="solve-btn" onclick="solve()">show steps →</button>
+    </div>
+
+    <div class="steps-area" id="steps"></div>
+    <div class="footer">mathpad — built by zecarrot · v1.0</div>
+  </div>
+
+  <script>
+    function solve() {
+      const a = parseFloat(document.getElementById('a').value);
+      const b = parseFloat(document.getElementById('b').value);
+      const op = document.getElementById('op').value;
+      if (isNaN(a) || isNaN(b)) return;
+
+      let steps = [];
+      let answer;
+      const opSymbols = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+      const opName = { '+': 'addition', '-': 'subtraction', '*': 'multiplication', '/': 'division' };
+
+      if (op === '+') {
+        answer = a + b;
+        steps = [
+          { num: 'step 1', label: 'write the problem', math: `${a} + ${b}` },
+          { num: 'step 2', label: 'line up the digits', math: `  ${a}\n+ ${b}\n${'─'.repeat(Math.max(String(a).length, String(b).length)+2)}` },
+          { num: 'step 3', label: 'add the numbers', math: `${a} + ${b} = <span class="highlight">${answer}</span>` },
+        ];
+      } else if (op === '-') {
+        answer = a - b;
+        steps = [
+          { num: 'step 1', label: 'write the problem', math: `${a} − ${b}` },
+          { num: 'step 2', label: 'check which is larger', math: `${a} ${a >= b ? '≥' : '<'} ${b}${a < b ? ' (result will be negative)' : ''}` },
+          { num: 'step 3', label: 'subtract', math: `${a} − ${b} = <span class="highlight">${answer}</span>` },
+        ];
+      } else if (op === '*') {
+        answer = a * b;
+        const bInt = Math.floor(Math.abs(b));
+        const digits = String(bInt).split('').reverse();
+        const partials = digits.map((d, i) => {
+          const val = a * parseInt(d) * Math.pow(10, i);
+          return { d, place: i, val };
+        });
+        steps = [
+          { num: 'step 1', label: 'write the problem', math: `${a} × ${b}` },
+          { num: 'step 2', label: 'multiply by each digit of ' + b, math: partials.map(p => `${a} × ${p.d}${ p.place > 0 ? ` × ${Math.pow(10,p.place)}` : ''} = ${p.val}`).join('<br>') },
+          { num: 'step 3', label: 'add the partial products', math: partials.map(p => p.val).join(' + ') + ` = <span class="highlight">${answer}</span>` },
+        ];
+      } else if (op === '/') {
+        if (b === 0) { alert("can't divide by zero!"); return; }
+        answer = a / b;
+        const quotient = Math.floor(Math.abs(a) / Math.abs(b));
+        const remainder = Math.abs(a) % Math.abs(b);
+        steps = [
+          { num: 'step 1', label: 'write the problem', math: `${a} ÷ ${b}` },
+          { num: 'step 2', label: 'how many times does ' + b + ' go into ' + a + '?', math: `${b} × ${quotient} = ${b * quotient}` },
+          { num: 'step 3', label: 'find the remainder', math: `${Math.abs(a)} − ${b * quotient} = ${remainder}` },
+          { num: 'step 4', label: 'write the answer', math: remainder === 0 ? `${a} ÷ ${b} = <span class="highlight">${answer}</span>` : `${a} ÷ ${b} = <span class="highlight">${quotient}</span> remainder <span class="highlight">${remainder}</span> (or ${parseFloat(answer.toFixed(6))})` },
+        ];
+      }
+
+      const html = `
+        <div class="steps-title">working — ${opName[op]}</div>
+        ${steps.map(s => `
+          <div class="step">
+            <div class="step-num">${s.num}</div>
+            <div class="step-content">
+              <div class="step-label">${s.label}</div>
+              <div class="step-math" style="white-space:pre-line">${s.math}</div>
+            </div>
+          </div>
+        `).join('')}
+        <div class="final-answer">
+          <div>
+            <div class="final-label">answer</div>
+            <div class="final-value">${a} ${opSymbols[op]} ${b} = ${op === '/' && (Math.abs(a) % Math.abs(b)) !== 0 ? parseFloat(answer.toFixed(6)) : answer}</div>
+          </div>
+        </div>
+      `;
+
+      const el = document.getElementById('steps');
+      el.innerHTML = html;
+      el.classList.add('show');
+    }
+  </script>
+</body>
+</html>
