@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>geometry — mathpad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #f5f0e8; font-family: 'Patrick Hand', cursive; min-height: 100vh; background-image: linear-gradient(#e8e0d0 1px, transparent 1px); background-size: 100% 32px; background-position: 0 24px; }
+    body::before { content: ''; position: fixed; left: 72px; top: 0; bottom: 0; width: 2px; background: rgba(255,100,100,0.3); z-index: 0; }
+    nav { position: sticky; top: 0; z-index: 10; display: flex; gap: 2rem; padding: 1rem 2rem 1rem 90px; font-size: 1rem; border-bottom: 2px solid rgba(255,100,100,0.2); background: rgba(245,240,232,0.95); flex-wrap: wrap; }
+    nav a { color: #888; text-decoration: none; transition: color 0.2s; }
+    nav a:hover, nav a.active { color: #e8473f; }
+    .page-title { font-family: 'Caveat', cursive; font-size: 0.75rem; color: #bbb; margin-left: auto; align-self: center; }
+    .container { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 3rem 2rem 3rem 90px; }
+    h1 { font-family: 'Caveat', cursive; font-size: 3rem; color: #2a2a2a; margin-bottom: 0.25rem; }
+    .sub { color: #aaa; font-size: 0.9rem; margin-bottom: 2rem; }
+    .shape-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .tab { background: rgba(255,255,255,0.7); border: 1.5px solid #ddd; border-radius: 4px; padding: 0.5rem 1rem; cursor: pointer; font-size: 0.9rem; color: #888; transition: all 0.2s; box-shadow: 1px 1px 0 #e0d8c8; }
+    .tab:hover, .tab.active { border-color: #e8473f; color: #e8473f; background: rgba(255,100,100,0.05); }
+    .input-area { background: rgba(255,255,255,0.7); border: 1.5px solid #ddd; border-radius: 4px; padding: 1.5rem; box-shadow: 2px 2px 0 #e0d8c8; margin-bottom: 1.5rem; }
+    .fields { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
+    .field-row { display: flex; align-items: center; gap: 1rem; }
+    .field-row label { color: #888; font-size: 0.9rem; width: 100px; }
+    .field-row input { background: #fffef9; border: 1.5px solid #ddd; border-radius: 4px; font-family: 'Caveat', cursive; font-size: 1.3rem; padding: 0.35rem 0.75rem; width: 120px; color: #2a2a2a; outline: none; transition: border-color 0.2s; }
+    .field-row input:focus { border-color: #e8473f; }
+    .solve-btn { background: #e8473f; border: none; color: #fff; font-family: 'Caveat', cursive; font-size: 1.2rem; padding: 0.6rem 2rem; border-radius: 4px; cursor: pointer; box-shadow: 2px 2px 0 #c73830; transition: background 0.2s; }
+    .solve-btn:hover { background: #c73830; }
+    .steps-area { background: rgba(255,255,255,0.7); border: 1.5px solid #ddd; border-radius: 4px; padding: 1.5rem; box-shadow: 2px 2px 0 #e0d8c8; display: none; }
+    .steps-area.show { display: block; }
+    .steps-title { font-family: 'Caveat', cursive; font-size: 1.1rem; color: rgba(255,100,100,0.6); margin-bottom: 1rem; text-transform: uppercase; }
+    .step { display: flex; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed #e8e0d0; }
+    .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .step-num { background: rgba(255,100,100,0.15); color: #e8473f; font-family: 'Caveat', cursive; font-size: 0.85rem; padding: 0.15rem 0.5rem; border-radius: 3px; white-space: nowrap; min-width: 60px; text-align: center; margin-top: 2px; }
+    .step-content { flex: 1; }
+    .step-label { color: #888; font-size: 0.85rem; margin-bottom: 0.25rem; }
+    .step-math { font-family: 'Caveat', cursive; font-size: 1.3rem; color: #2a2a2a; white-space: pre-line; }
+    .highlight { color: #e8473f; }
+    .answers { display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .answer-box { background: rgba(255,100,100,0.08); border: 2px solid rgba(255,100,100,0.3); border-radius: 4px; padding: 0.75rem 1.25rem; flex: 1; min-width: 120px; }
+    .answer-label { color: #888; font-size: 0.8rem; }
+    .answer-val { font-family: 'Caveat', cursive; font-size: 1.75rem; color: #e8473f; }
+    .footer { margin-top: 3rem; font-size: 0.8rem; color: #bbb; font-family: 'Caveat', cursive; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../index.html">home</a>
+    <a href="arithmetic.html">arithmetic</a>
+    <a href="algebra.html">algebra</a>
+    <a href="fractions.html">fractions</a>
+    <a href="geometry.html" class="active">geometry</a>
+    <a href="pemdas.html">pemdas</a>
+    <a href="../about.html">about</a>
+    <span class="page-title">mathpad ✏️</span>
+  </nav>
+  <div class="container">
+    <h1>geometry</h1>
+    <p class="sub">// area & perimeter for common shapes, with formula shown</p>
+    <div class="shape-tabs">
+      <div class="tab active" onclick="setShape('square',this)">square</div>
+      <div class="tab" onclick="setShape('rectangle',this)">rectangle</div>
+      <div class="tab" onclick="setShape('triangle',this)">triangle</div>
+      <div class="tab" onclick="setShape('circle',this)">circle</div>
+      <div class="tab" onclick="setShape('trapezoid',this)">trapezoid</div>
+      <div class="tab" onclick="setShape('parallelogram',this)">parallelogram</div>
+    </div>
+    <div class="input-area">
+      <div class="fields" id="fields"></div>
+      <button class="solve-btn" onclick="solveGeo()">calculate →</button>
+    </div>
+    <div class="steps-area" id="steps"></div>
+    <div class="footer">mathpad — built by zecarrot · v1.0</div>
+  </div>
+  <script>
+    const shapes = {
+      square: { fields: [['side (s)', 's']], area: v => v.s**2, perim: v => 4*v.s, aFormula: 's²', pFormula: '4s' },
+      rectangle: { fields: [['length (l)', 'l'], ['width (w)', 'w']], area: v => v.l*v.w, perim: v => 2*(v.l+v.w), aFormula: 'l × w', pFormula: '2(l + w)' },
+      triangle: { fields: [['base (b)', 'b'], ['height (h)', 'h'], ['side a', 'a'], ['side b2', 'b2'], ['side c', 'c']], area: v => 0.5*v.b*v.h, perim: v => v.a+v.b2+v.c, aFormula: '½ × b × h', pFormula: 'a + b + c' },
+      circle: { fields: [['radius (r)', 'r']], area: v => Math.PI*v.r**2, perim: v => 2*Math.PI*v.r, aFormula: 'π × r²', pFormula: '2 × π × r', perimName: 'circumference' },
+      trapezoid: { fields: [['base 1 (a)', 'a'], ['base 2 (b)', 'b'], ['height (h)', 'h'], ['side c', 'c'], ['side d', 'd']], area: v => 0.5*(v.a+v.b)*v.h, perim: v => v.a+v.b+v.c+v.d, aFormula: '½ × (a + b) × h', pFormula: 'a + b + c + d' },
+      parallelogram: { fields: [['base (b)', 'b'], ['height (h)', 'h'], ['side (s)', 's']], area: v => v.b*v.h, perim: v => 2*(v.b+v.s), aFormula: 'b × h', pFormula: '2(b + s)' },
+    };
+    let currentShape = 'square';
+
+    function setShape(name, el) {
+      currentShape = name;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderFields();
+      document.getElementById('steps').classList.remove('show');
+    }
+
+    function renderFields() {
+      const s = shapes[currentShape];
+      document.getElementById('fields').innerHTML = s.fields.map(([label, id]) =>
+        `<div class="field-row"><label>${label}</label><input type="number" id="f_${id}" value="5" step="any"/></div>`
+      ).join('');
+    }
+
+    function solveGeo() {
+      const s = shapes[currentShape];
+      const vals = {};
+      for (const [, id] of s.fields) {
+        vals[id] = parseFloat(document.getElementById(`f_${id}`).value);
+        if (isNaN(vals[id])) { alert('fill in all fields'); return; }
+      }
+      const area = s.area(vals);
+      const perim = s.perim(vals);
+      const perimName = s.perimName || 'perimeter';
+      const substituted_a = s.aFormula.replace(/([a-z][\d]?)/g, k => vals[k] !== undefined ? vals[k] : k);
+      const substituted_p = s.pFormula.replace(/([a-z][\d]?)/g, k => vals[k] !== undefined ? vals[k] : k);
+
+      const steps = [
+        { num: 'step 1', label: 'identify the shape and formula', math: `shape: ${currentShape}\narea formula:  A = ${s.aFormula}\n${perimName} formula:  P = ${s.pFormula}` },
+        { num: 'step 2', label: 'substitute in the values', math: `area:  A = ${s.aFormula}\n     = ${substituted_a}` },
+        { num: 'step 3', label: 'calculate area', math: `A = <span class="highlight">${parseFloat(area.toFixed(4))}</span>` },
+        { num: 'step 4', label: `calculate ${perimName}`, math: `P = ${s.pFormula}\n  = ${substituted_p}\n  = <span class="highlight">${parseFloat(perim.toFixed(4))}</span>` },
+      ];
+
+      const html = `
+        <div class="steps-title">working — ${currentShape}</div>
+        ${steps.map(s => `<div class="step"><div class="step-num">${s.num}</div><div class="step-content"><div class="step-label">${s.label}</div><div class="step-math">${s.math}</div></div></div>`).join('')}
+        <div class="answers">
+          <div class="answer-box"><div class="answer-label">area</div><div class="answer-val">${parseFloat(area.toFixed(4))} units²</div></div>
+          <div class="answer-box"><div class="answer-label">${perimName}</div><div class="answer-val">${parseFloat(perim.toFixed(4))} units</div></div>
+        </div>
+      `;
+      const el = document.getElementById('steps');
+      el.innerHTML = html;
+      el.classList.add('show');
+    }
+
+    renderFields();
+  </script>
+</body>
+</html>
